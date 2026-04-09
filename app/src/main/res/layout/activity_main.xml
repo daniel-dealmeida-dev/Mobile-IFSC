@@ -71,12 +71,12 @@
         android:id="@+id/tvResultado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Resultado aparecerá aqui"
+        android:layout_marginTop="30dp"
+        android:text="Resultado aparecerá aqui:"
         android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/btnCalcular"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="30dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnCalcular" />
 
     <ImageView
         android:id="@+id/imageView"
