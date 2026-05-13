@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -10,29 +11,28 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.myapplication.AdaptePlaneta;
+
+
+
 public class MainActivity extends AppCompatActivity {
 
     ListView lv;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
         lv = findViewById(R.id.listView);
         //Recuperar dados datasource
         PlanetaController pcontroler=new PlanetaController();
 
-        ArrayAdapter<> adaptador = new AdaptePlaneta(
-                this,
-                pcontroler.listaPlanetas();
+        PlanetaController planetaController = new PlanetaController();
 
-
-
-
-
-
-
-
+        AdaptePlaneta adaptador = new AdaptePlaneta(this, R.layout.item, planetaController.listaPlanetas());
         lv.setAdapter(adaptador);
+
     }
 }
