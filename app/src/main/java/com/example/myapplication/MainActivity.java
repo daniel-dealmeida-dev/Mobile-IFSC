@@ -1,38 +1,63 @@
-package com.example.myapplication;
+package com.example.meuapp;
 
-import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.myapplication.AdaptePlaneta;
+import com.example.myapplication.R;
 
-
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    ListView lv;
-    @SuppressLint("MissingInflatedId")
+    Button b;
+    TextView tv;
+    EditText edmin, edmax;
+
+    @RequiresApi(api = Build.VERSION_CODES.VANILLA_ICE_CREAM)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        lv = findViewById(R.id.listView);
-        //Recuperar dados datasource
-        PlanetaController pcontroler=new PlanetaController();
+        b = findViewById(R.id.button);
+        tv = findViewById(R.id.tv);
+        edmin = findViewById(R.id.edMin);
+        edmax = findViewById(R.id.edMax);
 
-        PlanetaController planetaController = new PlanetaController();
 
-        AdaptePlaneta adaptador = new AdaptePlaneta(this, R.layout.item, planetaController.listaPlanetas());
-        lv.setAdapter(adaptador);
+        b.setOnClickListener(v -> {
+            // int min= Integer.parseInt(edmin.getText().toString());
+            // int max= Integer.parseInt(edmax.getText().toString());
+            String minStr = edmin.getText().toString();
+            String maxStr = edmax.getText().toString();
+            if (minStr.isEmpty()){
+                edmin.setError("Informe uma valor mínimo");
+                return;
+            }
+            if (maxStr.isEmpty()) {
+                edmax.setError("Informe um valor máximo");
+                return;
+            }
+
+            int min=Integer.parseInt(minStr);
+            int max=Integer.parseInt(maxStr);
+
+
+            Random random= new Random();
+            int r = random.nextInt(min, max);
+            tv.setText(Integer.toString(r));
+
+        });
 
     }
 }
