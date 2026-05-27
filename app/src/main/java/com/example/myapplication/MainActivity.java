@@ -1,63 +1,88 @@
-package com.example.meuapp;
+package com.example.myapplication;
 
-import android.os.Build;
+import android.annotation.SuppressLint;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.example.myapplication.R;
-
-import java.util.Random;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button b;
-    TextView tv;
-    EditText edmin, edmax;
+    SQLiteDatabase sqLiteDatabase;
 
-    @RequiresApi(api = Build.VERSION_CODES.VANILLA_ICE_CREAM)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        b = findViewById(R.id.button);
-        tv = findViewById(R.id.tv);
-        edmin = findViewById(R.id.edMin);
-        edmax = findViewById(R.id.edMax);
+        ListView lv = findViewById(R.id.listview);
 
+        sqLiteDatabase = openOrCreateDatabase("notas", MODE_PRIVATE, null);
 
-        b.setOnClickListener(v -> {
-            // int min= Integer.parseInt(edmin.getText().toString());
-            // int max= Integer.parseInt(edmax.getText().toString());
-            String minStr = edmin.getText().toString();
-            String maxStr = edmax.getText().toString();
-            if (minStr.isEmpty()){
-                edmin.setError("Informe uma valor mínimo");
-                return;
-            }
-            if (maxStr.isEmpty()) {
-                edmax.setError("Informe um valor máximo");
-                return;
-            }
+        sqLiteDatabase.execSQL(
+                "CREATE TABLE IF NOT EXISTS notas (" +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "titulo TEXT," +
+                        "nota TEXT)"
+        );
 
-            int min=Integer.parseInt(minStr);
-            int max=Integer.parseInt(maxStr);
+        // Inserir dados
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("titulo", "joão");
+        contentValues.put("nota", "7777777777");
 
+        sqLiteDatabase.insert("notas", null, contentValues);
 
-            Random random= new Random();
-            int r = random.nextInt(min, max);
-            tv.setText(Integer.toString(r));
+        // Recuperar dados
+        Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM notas", null);
 
-        });
+        ArrayList<com.example.meuapp.Nota> listaNotas = new ArrayList<>();
 
+        if (c.moveToFirst()) {
+
+            do {
+                @SuppressLint("Range")
+                int id = c.getInt(c.getColumnIndex("id"));
+
+                @SuppressLint("Range")
+                String titulo = c.getString(c.getColumnIndex("titulo"));
+
+                @SuppressLint("Range")
+                String nota = c.getString(c.getColumnIndex("nota"));
+
+                com.example.meuapp.Nota n = new com.example.meuapp.Nota(id, titulo, nota);
+
+                listaNotas.add(n);
+
+                Log.d("SELECT", id + "," + titulo + "," + nota);
+
+            } while (c.moveToNext());
+        }
+
+        c.close();
+
+        ArrayList<String> listaTitulos = new ArrayList<>();
+
+        for (com.example.meuapp.Nota nota : listaNotas) {
+            listaTitulos.add(nota.getTitulo());
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_1,
+                listaTitulos
+        );
+
+        lv.setAdapter(adapter);
     }
 }
