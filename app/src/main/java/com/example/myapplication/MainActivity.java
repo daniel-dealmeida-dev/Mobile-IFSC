@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 listaTitulos
         );
 
+
         lv.setAdapter(adapter);
     }
 }
